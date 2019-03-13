@@ -52,28 +52,26 @@ namespace JiebaNet.Segmenter
         {
             var reHan = RegexChineseDefault;
             var reSkip = RegexSkipDefault;
-            Func<string, IEnumerable<string>> cutMethod = null;
 
             if (cutAll)
             {
                 reHan = RegexChineseCutAll;
                 reSkip = RegexSkipCutAll;
             }
+            return CutIt(text, getCutMethod(cutAll, hmm), reHan, reSkip, cutAll);
+        }
 
+        private Func<String, IEnumerable<String>> getCutMethod(bool cutAll = false, bool hmm = true)
+        {
             if (cutAll)
             {
-                cutMethod = CutAll;
+                return CutAll;
             }
-            else if (hmm)
+            if (hmm)
             {
-                cutMethod = CutDag;
+                return CutDag;
             }
-            else
-            {
-                cutMethod = CutDagWithoutHmm;
-            }
-
-            return CutIt(text, cutMethod, reHan, reSkip, cutAll);
+            return CutDagWithoutHmm;
         }
 
         public IEnumerable<string> CutForSearch(string text, bool hmm = true)
