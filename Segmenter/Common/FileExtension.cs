@@ -23,7 +23,7 @@ namespace JiebaNet.Segmenter.Common
 
         public static List<string> ReadEmbeddedAllLines(string path, Encoding encoding)
         {
-            List<string> list = new List<string>();
+            var list = new List<string>();
             using (var sr = new StreamReader(path))
             {
                 string item;
@@ -35,7 +35,7 @@ namespace JiebaNet.Segmenter.Common
             return list;
         }
 
-        public static List<string> ReadEmbeddedAllLines(string path)
+        public static IEnumerable<string> ReadEmbeddedAllLines(string path)
         {
             return ReadEmbeddedAllLines(path, Encoding.UTF8);
         }

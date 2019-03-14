@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JiebaNet.Segmenter.Common;
 using Newtonsoft.Json;
+using static System.String;
 
 namespace JiebaNet.Segmenter.PosSeg
 {
@@ -38,17 +39,19 @@ namespace JiebaNet.Segmenter.PosSeg
                 var parts = posList[i].Split('-');
                 var charState = parts[0][0];
                 var pos = parts[1];
-                if (charState == 'B')
-                    begin = i;
-                else if (charState == 'E')
+                switch (charState)
                 {
-                    tokens.Add(new Pair(sentence.Sub(begin, i + 1), pos));
-                    next = i + 1;
-                }
-                else if (charState == 'S')
-                {
-                    tokens.Add(new Pair(sentence.Sub(i, i + 1), pos));
-                    next = i + 1;
+                    case 'B':
+                        begin = i;
+                        break;
+                    case 'E':
+                        tokens.Add(new Pair(sentence.Sub(begin, i + 1), pos));
+                        next = i + 1;
+                        break;
+                    case 'S':
+                        tokens.Add(new Pair(sentence.Sub(i, i + 1), pos));
+                        next = i + 1;
+                        break;
                 }
             }
             if (next < sentence.Length)
@@ -91,7 +94,7 @@ namespace JiebaNet.Segmenter.PosSeg
             {
                 var emP = _emitProbs[state].GetDefault(sentence[0], Constants.MinProb);
                 v[0][state] = _startProbs[state] + emP;
-                memPath[0][state] = string.Empty;
+                memPath[0][state] = Empty;
             }
 
             // For each remaining char
@@ -123,7 +126,7 @@ namespace JiebaNet.Segmenter.PosSeg
                     var emp = _emitProbs[y].GetDefault(sentence[i], Constants.MinProb);
 
                     var prob = double.MinValue;
-                    var state = string.Empty;
+                    var state = Empty;
 
                     foreach (var y0 in prevStates)
                     {
@@ -132,7 +135,7 @@ namespace JiebaNet.Segmenter.PosSeg
                         // TODO: compare two very small values;
                         // TODO: how to deal with negative infinity
                         if (prob < tranp ||
-                            (prob == tranp && string.Compare(state, y0, StringComparison.CurrentCultureIgnoreCase) < 0))
+                            (prob == tranp && Compare(state, y0, StringComparison.CurrentCultureIgnoreCase) < 0))
                         {
                             prob = tranp;
                             state = y0;
@@ -146,16 +149,15 @@ namespace JiebaNet.Segmenter.PosSeg
             var vLast = v.Last();
             var last = memPath.Last().Keys.Select(y => new {State = y, Prob = vLast[y]});
             var endProb = double.MinValue;
-            var endState = string.Empty;
+            var endState = Empty;
             foreach (var endPoint in last)
             {
                 // TODO: compare two very small values;
-                if (endProb < endPoint.Prob || 
-                    (endProb == endPoint.Prob && String.Compare(endState, endPoint.State, StringComparison.CurrentCultureIgnoreCase) < 0))
-                {
-                    endProb = endPoint.Prob;
-                    endState = endPoint.State;
-                }
+                if (!(endProb < endPoint.Prob) && (endProb != endPoint.Prob ||
+                                                   Compare(endState, endPoint.State,
+                                                       StringComparison.CurrentCultureIgnoreCase) >= 0)) continue;
+                endProb = endPoint.Prob;
+                endState = endPoint.State;
             }
 
             var route = new string[sentence.Length];

@@ -71,27 +71,25 @@ namespace JiebaNet.Analyser
             for (var i = 0; i < words.Count(); i++)
             {
                 var wp = words[i];
-                if (PairFilter(allowPos, wp))
+                if (!PairFilter(allowPos, wp)) continue;
+                for (var j = i + 1; j < i + Span; j++)
                 {
-                    for (var j = i + 1; j < i + Span; j++)
+                    if (j >= words.Count)
                     {
-                        if (j >= words.Count)
-                        {
-                            break;
-                        }
-                        if (!PairFilter(allowPos, words[j]))
-                        {
-                            continue;
-                        }
-
-                        // TODO: better separator.
-                        var key = wp.Word + "$" + words[j].Word;
-                        if (!cm.ContainsKey(key))
-                        {
-                            cm[key] = 0;
-                        }
-                        cm[key] += 1;
+                        break;
                     }
+                    if (!PairFilter(allowPos, words[j]))
+                    {
+                        continue;
+                    }
+
+                    // TODO: better separator.
+                    var key = wp.Word + "$" + words[j].Word;
+                    if (!cm.ContainsKey(key))
+                    {
+                        cm[key] = 0;
+                    }
+                    cm[key] += 1;
                 }
             }
 

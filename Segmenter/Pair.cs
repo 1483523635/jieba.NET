@@ -13,7 +13,7 @@
 
         public override string ToString()
         {
-            return "Candidate [Key=" + Key + ", Freq=" + Freq + "]";
+            return $"Candidate [Key={Key}, Freq={Freq}]";
         }
     }
 }

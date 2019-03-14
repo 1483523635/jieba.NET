@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -44,11 +43,7 @@ namespace JiebaNet.Segmenter.Common
 
         public static TValue GetDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue defaultValue)
         {
-            if (dict.ContainsKey(key))
-            {
-                return dict[key];
-            }
-            return defaultValue;
+            return !dict.ContainsKey(key) ? defaultValue : dict[key];
         }
 
         public static void Update<TKey, TValue>(this IDictionary<TKey, TValue> dict, IDictionary<TKey, TValue> other)
@@ -65,23 +60,12 @@ namespace JiebaNet.Segmenter.Common
 
         public static string Left(this string s, int endIndex)
         {
-            if (string.IsNullOrEmpty(s))
-            {
-                return s;
-            }
-
-            return s.Substring(0, endIndex);
+            return string.IsNullOrEmpty(s) ? s : s.Substring(0, endIndex);
         }
 
         public static string Right(this string s, int startIndex)
         {
-            if (string.IsNullOrEmpty(s))
-            {
-                return s;
-            }
-
-
-            return s.Substring(startIndex);
+            return string.IsNullOrEmpty(s) ? s : s.Substring(startIndex);
         }
 
         public static string Sub(this string s, int startIndex, int endIndex)

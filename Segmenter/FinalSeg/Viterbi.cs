@@ -113,11 +113,9 @@ namespace JiebaNet.Segmenter.FinalSeg
                     {
                         var tranp = _transProbs[y0].GetDefault(y, Constants.MinProb);
                         tranp = v[i - 1][y0] + tranp + emp;
-                        if (candidate.Freq <= tranp)
-                        {
-                            candidate.Freq = tranp;
-                            candidate.Key = y0;
-                        }
+                        if (!(candidate.Freq <= tranp)) continue;
+                        candidate.Freq = tranp;
+                        candidate.Key = y0;
                     }
                     vv[y] = candidate.Freq;
                     newPath[y] = new Node(y, path[candidate.Key]);
@@ -142,17 +140,19 @@ namespace JiebaNet.Segmenter.FinalSeg
             for (var i = 0; i < sentence.Length; i++)
             {
                 var pos = posList[i];
-                if (pos == 'B')
-                    begin = i;
-                else if (pos == 'E')
+                switch (pos)
                 {
-                    tokens.Add(sentence.Sub(begin, i + 1));
-                    next = i + 1;
-                }
-                else if (pos == 'S')
-                {
-                    tokens.Add(sentence.Sub(i, i + 1));
-                    next = i + 1;
+                    case 'B':
+                        begin = i;
+                        break;
+                    case 'E':
+                        tokens.Add(sentence.Sub(begin, i + 1));
+                        next = i + 1;
+                        break;
+                    case 'S':
+                        tokens.Add(sentence.Sub(i, i + 1));
+                        next = i + 1;
+                        break;
                 }
             }
             if (next < sentence.Length)
