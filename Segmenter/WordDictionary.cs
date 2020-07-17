@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using JiebaNet.Segmenter.Common;
 
 namespace JiebaNet.Segmenter
@@ -36,8 +35,7 @@ namespace JiebaNet.Segmenter
             {
                 var stopWatch = new Stopwatch();
                 stopWatch.Start();
-                var filePath = ConfigManager.MainDictFile;
-                
+                var filePath = MainDict;
                 
                 using (var sr = new StreamReader(filePath))
                 {
